@@ -1,6 +1,2 @@
 Name,ID,Government,Age,Gender,Vaccine Type,First Dose,First Date,Second Dose,Second Date,Password
-jooo,2021170627,Cairo,14,m,Sinovac,Yes,14/9/2020,Yes,14/92030,12345678
-jooo,2021170627,Cairo,14,m,Sinovac,Yes,14/9/2020,No,,12345678
-youssef ahmed,2021170628,Cairo,19,m,Sinopharm,Yes,12/9/2020,No,,12345678
-Nour,2021170590,Cairo,19,m,Janseen,Yes,14/9/2030,No,,12345678
-2021170628
+yyyy,12345,Giza,111,m,Sinopharm,Yes,12/20/2020,No,,1234

@@ -1,5 +1,6 @@
 #ifndef WIDGET_H
 #define WIDGET_H
+#pragma once
 using namespace std;
 #include<QDebug>//>
 #include <QWidget>
@@ -9,7 +10,14 @@ using namespace std;
 #include <QCheckBox>
 #include "Admin.h"
 #include <QMessageBox>
-
+#include<iostream>
+#include <QApplication>
+#include <QFile>
+#include <QTextStream>
+#include <QLabel>
+#include <QList>
+#include <QStringListModel>
+#include <QFile>
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
 QT_END_NAMESPACE
@@ -37,6 +45,15 @@ private slots:
 
 
     void on_LoginSubmit_clicked();
+
+    void on_ShowEntryButton_clicked();
+
+
+
+    void on_EditEntrySubmit_clicked();
+
+    void on_DeleteEntry_clicked();
+
 
 private:
     Ui::Widget *ui;

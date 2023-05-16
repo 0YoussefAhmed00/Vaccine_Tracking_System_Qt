@@ -1,27 +1,33 @@
 #pragma once
 #include "widget.h"
 #include "ui_widget.h"
+
+MainManager mm;
+Admin admin(mm);
+User user(mm);
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
 {
     ui->setupUi(this);
-
+    mm.LoadEntriesFromFile("D:/QtPs/Vaccine_Tracking_sys_qt/TestingCases.csv");
         ui->Signup_page->setVisible(false);
         ui->Login_page->setVisible(false);
         ui->FDoseSu->setVisible(false);
         ui->SDoseSu->setVisible(false);
         ui->UserPage->setVisible(false);
-
-
+        ui->ShowPage->setVisible(false);
+        ui->EditEntryPage->setVisible(false);
+        ui->AdminPageB->setVisible(false);
 }
 //###########
-    MainManager mm;
+int IDTemp;
     bool Gender;
     Entry entry;
     bool saveEntry;
     bool SubmitLogin;
     bool AdminL;
+    bool EditEntry;
 Widget::~Widget()
 {
     delete ui;
@@ -83,7 +89,6 @@ void Widget::on_SaveSu_clicked()
     else {
       entry.secondDose = false;
     }
-    mm.LoadEntriesFromFile("D:/QtPs/Vaccine_Tracking_sys_qt/TestingCases.csv");
     if(entry.name=="NULL"||entry.age==NULL||entry.gender=='NULL'||entry.government=="NULL"||entry.password=="NULL")
     {
       saveEntry=false;
@@ -132,12 +137,13 @@ void Widget::on_FSu_clicked()
 
 void Widget::on_LoginSubmit_clicked()
 {
-    mm.LoadEntriesFromFile("D:/QtPs/Vaccine_Tracking_sys_qt/TestingCases.csv");
-    if (ui->IDLogin->text()=="Admin" &&ui->PasswordLogin->text()=="Admin_1234"){
+
+
+    if (ui->IDLogin->text()=="Admin" && ui->PasswordLogin->text()=="Admin_1234" ){
      QMessageBox::information(this, "successfully logged in", "Welcome Admin.");
      AdminL = true;
-     ui->UserPage->setVisible(true);
-     ui->IntialView->setVisible(false);
+     ui->AdminPageB->setVisible(true);
+     ui->Login_page->setVisible(false);
     }else if (AdminL==false){
     int IDLoginV = ui->IDLogin->text().toInt();
     string PasswordLoginV = ui->PasswordLogin->text().toStdString();
@@ -151,8 +157,107 @@ void Widget::on_LoginSubmit_clicked()
      // Entry not found or password doesn't match
      SubmitLogin = true;
      ui->UserPage->setVisible(true);
-     ui->IntialView->setVisible(false);
+     ui->Login_page->setVisible(false);
+     IDTemp=IDLoginV;
     }
     }
 }
+
+
+void Widget::on_ShowEntryButton_clicked()
+{
+
+ string username= mm.GetEntry(IDTemp).name;
+  QString Username = QString::fromStdString(username);
+    ui->ShowUsername->setText(Username);
+    int UserID =mm.GetEntry(IDTemp).id;
+    QString UseRID = QString::number(UserID);
+     ui->ShowUserID->setText(UseRID);
+     int UAge =mm.GetEntry(IDTemp).age;
+     QString UserAge = QString::number(UAge);
+    ui->ShowUserAge->setText(UserAge);
+     string UGov= mm.GetEntry(IDTemp).government;
+    QString UserGov = QString::fromStdString(UGov);
+    ui->ShowUserGov->setText(UserGov);
+    string UPassword= mm.GetEntry(IDTemp).password;
+    QString UserPassword = QString::fromStdString(UPassword);
+     ui->ShowUserPassword->setText(UserPassword);
+     string UserVaccineType= mm.GetEntry(IDTemp).vaccineType;
+     QString UserVT = QString::fromStdString(UserVaccineType);
+     ui->ShowUserVT->setText(UserVT);
+     char UserGender =mm.GetEntry(IDTemp).gender;
+     QString UGender = QString::fromLatin1(&UserGender, 1);
+     ui->ShowUserGender->setText(UserVT);
+     string FirstDose =mm.GetEntry(IDTemp).firstDoseDate;
+     QString FDose = QString::fromStdString(FirstDose);
+     ui->ShowUserFD->setText(FDose);
+     string secondDose =mm.GetEntry(IDTemp).secondDoseDate;
+     QString SDose = QString::fromStdString(secondDose);
+     ui->ShowUserSD->setText(SDose);
+}
+
+
+
+void Widget::on_EditEntrySubmit_clicked()
+{     Entry Editent;
+
+     string EditUN = ui->Editusername->text().toStdString();
+     Editent.name =EditUN;
+
+     int EAge = ui->EditUserAge->text().toInt();
+     Editent.age=EAge;
+
+     int EID = ui->EditUserID->text().toInt();
+     Editent.id=EID;
+
+     string EGOV = ui->EditUserGov->text().toStdString();
+     Editent.government = EGOV;
+     qDebug() << Editent.government <<"\n";
+
+     char Egender = '\0';
+     string EditGender(1, Egender);
+     EditGender=ui->EditUserG->text().toStdString();
+
+     string EPassword = ui->EditUserP->text().toStdString();
+     Editent.password =EPassword;
+
+     string EvaccineTypeValue = ui->EditUserVT->text().toStdString();
+     Editent.vaccineType=EvaccineTypeValue;
+
+     string EFirstDoseV = ui->EditUserFD->text().toStdString();
+     Editent.firstDoseDate =EFirstDoseV;
+
+     string ESecondDoseV = ui->EditUserSD->text().toStdString();
+     Editent.secondDoseDate =ESecondDoseV;
+
+
+     if(Editent.name=="NULL"||Editent.age==NULL||Editent.gender=='NULL'||Editent.government=="NULL"||Editent.password=="NULL")
+     {
+    EditEntry=false;
+    QMessageBox::information(this, "Alert", "Please Enter your Data.");
+     }
+
+     else if(mm.CheckID(Editent.id))
+     {
+    QMessageBox::information(this, "Alert", "This ID is Already Exist Chage it Please.");
+    EditEntry=false;
+     }
+     else{
+    EditEntry=true;
+     }
+
+     if(EditEntry==true){
+    ui->EditEntryPage->hide();
+     mm.EditEntry(IDTemp,Editent);
+     mm.SaveEntriesToFile("D:/QtPs/Vaccine_Tracking_sys_qt/TestingCases.csv");
+}
+}
+
+void Widget::on_DeleteEntry_clicked()
+{
+     mm.DeleteEntry(IDTemp);
+      mm.SaveEntriesToFile("D:/QtPs/Vaccine_Tracking_sys_qt/TestingCases.csv");
+}
+
+
 
